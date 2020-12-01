@@ -1,0 +1,112 @@
+@startuml
+title Klassediagram af Space Invaderz
+
+
+class Player << (P,white)>> {
+    - sprite
+    - dir
+    - speed
+	==methods==
+    + Player(spritesheet, windowSize)
+    + Draw(window, deltaTime)
+    + OnKeyDown(key)
+    + OnKeyUp(key)
+    + getPosition() const
+    + getSize() const
+    + getBounds() const
+}
+
+class Segment << (S,green)>> {
+    + image
+    + texture
+    + sprite
+    + damage
+	==methods==
+    + Segment(spritesheet, position, segment)
+}
+
+
+class Shield << (S,green)>> {
+    - segments : vector<Segment>
+    - rows 
+    - cols
+    - wholebase
+	==methods==
+    + Shield(spritesheet, position)
+    + Draw(window, deltaTime)
+    + CheckHit(bullet)
+}
+
+
+class Alien << (A,red)>> {
+    + sprite
+    + hit
+    ..
+	- dir
+    - moveSize
+    - rowSize
+    - current_frame
+    - frame_0
+    - frame_1
+    - exploding
+	==methods==
+    + Alien(spritesheet, position, alien_type)
+    + Draw(window, deltaTime)
+    + CanMakeMove(window)
+    + NextRow()
+    + Move()
+    + IsHit()
+
+    + getPosition() const
+    + getSize() const
+    + getBounds() const
+}
+
+class Game << (G,yellow)>> {
+	- windowSize
+    - *window
+    - deltaClock
+    - spritesheet
+    - alien_timer
+    - alien_bullet_timer
+    - alien_bullet_interval
+    - alien_update_interval
+
+    - player : Player
+    - bullets : vector<Bullet>
+    - aliens : vector<Alien>
+    - shields : vector<Shield>
+	==methods==
+    + Game()
+    + ~Game()
+    + Exec()
+    + Draw(sf::RenderWindow &window)
+    + DrawGUI()
+    + KeyUpEvent(sf::Keyboard::Key key)
+    + KeyDownEvent(sf::Keyboard::Key key)
+    + Game_Over()
+}
+
+
+
+skinparam nodesep 100
+
+' App -[hidden]> DataStore
+' DataStore |o-- App : store: DataStore
+' DataStore |o-- OldSessionList : store: DataStore
+' DataStore |o-- Container : store: DataStore
+' DataStore -[hidden]> Container
+
+Game *-- Player : player
+Game *-- Alien : aliens
+Game *-- Shield : shields
+Shield *-- Segment : segments
+' App <..[norank]> Container
+' Modal <..> OldSessionList
+' App <..> GraphView  
+' GraphView <..> Graph
+
+
+
+
+@enduml
